@@ -171,7 +171,6 @@
                 </configuration>
             </plugin>
 
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -185,7 +184,7 @@
                         <phase>test</phase>
                         <configuration>
                             <doclet>de.ohmesoftware.javadoctoproperties.Converter</doclet>
-                            <additionalOptions>-prefix rest.description</additionalOptions>
+                            <additionalOptions>-prefix rest.description -output mydocs.properties</additionalOptions>
                             <debug>true</debug>
                             <docletPath>${project.build.outputDirectory}</docletPath>
                             <sourcepath>${project.basedir}/src/test/java/de/ohmesoftware/javadoctoproperties/model</sourcepath>
@@ -193,7 +192,6 @@
                     </execution>
                 </executions>
             </plugin>
-
 
         </plugins>
     </build>

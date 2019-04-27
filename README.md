@@ -19,16 +19,43 @@ This is the first version and has the following limitations:
 
 # Usage
 
+## Cmd Line:
+
 ```
         javadoc -doclet de.ohmesoftware.javadoctoproperties.Converter -docletpath target/classes -sourcepath src/main/java de.example.my.model
 ```
 
-## Maven Dependency
+## Maven
 
 ```
-    <groupId>de.ohmesoftware</groupId>
-    <artifactId>javadoctoproperties</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>javadoc-test</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <doclet>de.ohmesoftware.javadoctoproperties.Converter</doclet>
+                            <additionalOptions>-prefix rest.description -output src/main/resources/mydocs.properties</additionalOptions>
+                            <debug>true</debug>
+                            <docletPath>${project.build.outputDirectory}</docletPath>
+                            <sourcepath>${project.basedir}/src/main/java/foo/bar/model</sourcepath>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>de.ohmesoftware</groupId>
+                        <artifactId>javadoctoproperties</artifactId>
+                        <version>0.0.1-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 ```
 
 # Deployment + Release
