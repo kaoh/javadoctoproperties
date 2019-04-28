@@ -4,7 +4,7 @@
     <groupId>de.ohmesoftware</groupId>
     <artifactId>javadoctoproperties</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Javdoc to Properties Converter</name>
+    <name>Javadoc to Properties Converter</name>
 
     <description>This library generates a properties file as string as output from Java source files' Javadocs. It is implemented as
         Doclet and to be used together with `javadoc`.</description>
@@ -45,7 +45,7 @@
             <artifactId>tools</artifactId>
             <scope>system</scope>
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
-            <version>LATEST</version>
+            <version>1.8</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
