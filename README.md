@@ -12,7 +12,13 @@ ALPS or JSON schema documentation used in [Spring Data REST API](https://docs.sp
 [OpenAPI documentation (former Swagger)](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) using 
 property files in the annotations, e.g. in ` ApiModelProperty` support by [SpringFox](https://springfox.github.io/springfox/).
 
-It is using the [Doclet API](https://docs.oracle.com/javase/6/docs/jdk/api/javadoc/doclet/index.html) internally.
+It is using the [Doclet API](https://docs.oracle.com/javase/9/docs/api/jdk/javadoc/doclet/package-summary.html) internally.
+
+Supported:
+* Prefix for property keys
+* Output file naming
+* Excludes
+* Includes
 
 This is the first version and has the following limitations:
 
@@ -44,6 +50,7 @@ This is the first version and has the following limitations:
                         <configuration>
                             <doclet>de.ohmesoftware.javadoctoproperties.Converter</doclet>
                             <additionalOptions>-prefix rest.description -output src/main/resources/mydocs.properties</additionalOptions>
+                            <additionalOptions>-i *Foo* -e *model.Bar*</additionalOptions>
                             <debug>true</debug>
                             <docletPath>${project.build.outputDirectory}</docletPath>
                             <sourcepath>${project.basedir}/src/main/java/foo/bar/model</sourcepath>

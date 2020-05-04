@@ -13,9 +13,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 import java.io.*;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -32,6 +30,8 @@ public class Converter implements Doclet {
 
     private static final String PREFIX_OPTION = "-prefix";
     private static final String OUTPUT_OPTION = "-output";
+    private static final String INCLUDE_OPTION = "-includes";
+    private static final String EXCLUDE_OPTION = "-excludes";
     private static final String EMPTY = "";
     private static final String DEFAULT_OUTPUT = "javadoc.properties";
 
@@ -40,6 +40,10 @@ public class Converter implements Doclet {
     private String output = DEFAULT_OUTPUT;
 
     private String propertiesPrefix = EMPTY;
+
+    private List<String> includes;
+
+    private List<String> excludes;
 
     @Override
     public void init(Locale locale, Reporter reporter) {
@@ -76,10 +80,7 @@ public class Converter implements Doclet {
 
                           @Override
                           public boolean process(String s, List<String> list) {
-                              if (list.size() != 1) {
-                                  return false;
-                              }
-                              list.stream().findFirst().ifPresent(f -> output = f);
+                              output = list.get(0);
                               return true;
                           }
                       },
@@ -112,10 +113,73 @@ public class Converter implements Doclet {
 
                     @Override
                     public boolean process(String s, List<String> list) {
-                        if (list.size() != 1) {
-                            return false;
-                        }
-                        list.stream().findFirst().ifPresent(f -> propertiesPrefix = f);
+                        propertiesPrefix = list.get(0);
+                        return true;
+                    }
+                },
+                new Option() {
+
+                    @Override
+                    public int getArgumentCount() {
+                        return 1;
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return String.format("The includes classes separated by a colon (:). Default: %s", EMPTY);
+                    }
+
+                    @Override
+                    public Kind getKind() {
+                        return Kind.STANDARD;
+                    }
+
+                    @Override
+                    public List<String> getNames() {
+                        return List.of(INCLUDE_OPTION, "-i");
+                    }
+
+                    @Override
+                    public String getParameters() {
+                        return includes != null ? String.join(":", includes) : EMPTY;
+                    }
+
+                    @Override
+                    public boolean process(String s, List<String> list) {
+                        includes = Arrays.asList(list.get(0).split(":"));
+                        return true;
+                    }
+                },
+                new Option() {
+
+                    @Override
+                    public int getArgumentCount() {
+                        return 1;
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return String.format("The excludes classes separated by a colon (:). Default: %s", EMPTY);
+                    }
+
+                    @Override
+                    public Kind getKind() {
+                        return Kind.STANDARD;
+                    }
+
+                    @Override
+                    public List<String> getNames() {
+                        return List.of(EXCLUDE_OPTION, "-e");
+                    }
+
+                    @Override
+                    public String getParameters() {
+                        return excludes != null ? String.join(":", excludes) : EMPTY;
+                    }
+
+                    @Override
+                    public boolean process(String s, List<String> list) {
+                        excludes = Arrays.asList(list.get(0).split(":"));
                         return true;
                     }
                 }
@@ -136,12 +200,14 @@ public class Converter implements Doclet {
         PrintWriter printWriter = new PrintWriter(stringWriter);
         String propertyPrefix = buildPrefix(propertiesPrefix);
         Set<TypeElement> typeElements = ElementFilter.typesIn(docletEnvironment.getSpecifiedElements());
-        for (TypeElement typeDoc : typeElements) {
-            printProperty(printWriter, propertyPrefix, typeDoc, docTrees);
-            for (VariableElement fieldDoc : ElementFilter.fieldsIn(typeDoc.getEnclosedElements())) {
-                printProperty(printWriter, propertyPrefix + buildPropertyName(typeDoc), fieldDoc, docTrees);
-            }
-        }
+        typeElements.stream().filter(this::matchFilter).forEach(
+                t -> {
+                    printProperty(printWriter, propertyPrefix, t, docTrees);
+                    for (VariableElement fieldDoc : ElementFilter.fieldsIn(t.getEnclosedElements())) {
+                        printProperty(printWriter, propertyPrefix + buildPropertyName(t), fieldDoc, docTrees);
+                    }
+                }
+        );
         try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(output))) {
             reporter.print(Diagnostic.Kind.NOTE, String.format("Writing to %s", new File(output).getAbsolutePath()));
             outputStreamWriter.write(stringWriter.toString());
@@ -150,6 +216,38 @@ public class Converter implements Doclet {
             return false;
         }
         return true;
+    }
+
+    private static String getRegEx(String pattern) {
+        String _pattern = pattern.replace(".", "\\.");
+        _pattern = _pattern.replace("**", ".*");
+        _pattern = _pattern.replace("*", ".*");
+        _pattern = _pattern.replace("?", ".");
+        return _pattern;
+    }
+
+    private boolean matchFilter(TypeElement typeElement) {
+        return (includes == null || Optional.ofNullable(includes).filter(
+                _includes -> _includes.stream().anyMatch(include -> {
+                            boolean matches = typeElement.getQualifiedName().toString().matches(getRegEx(include));
+                            if (matches) {
+                                reporter.print(Diagnostic.Kind.NOTE, String.format("Including class: '%s'", typeElement.getQualifiedName().toString()));
+                            }
+                            return matches;
+                        }
+                )
+        ).isPresent())
+                && (excludes == null ||
+                !Optional.ofNullable(excludes).filter(
+                        _excludes -> _excludes.stream().anyMatch(exclude -> {
+                            boolean matches = typeElement.getQualifiedName().toString().matches(getRegEx(exclude));
+                            if (matches) {
+                                reporter.print(Diagnostic.Kind.NOTE, String.format("Excluding class: '%s'", typeElement.getQualifiedName().toString()));
+                            }
+                            return matches;
+                        })
+                ).isPresent()
+        );
     }
 
     private static String buildPropertyName(Element memberDoc) {
@@ -163,11 +261,17 @@ public class Converter implements Doclet {
         return propertiesPrefix;
     }
 
-    private static void printProperty(PrintWriter printWriter, String propertiesPrefix, Element memberDoc,  DocTrees docTrees) {
+    private void printProperty(PrintWriter printWriter, String propertiesPrefix, Element memberDoc, DocTrees docTrees) {
         printWriter.print(buildPrefix(propertiesPrefix));
         printWriter.print(buildPropertyName(memberDoc));
         printWriter.print(EQUALS);
-        printWriter.println(cleanComment(docTrees.getDocCommentTree(memberDoc).getFullBody().toString()));
+        if (docTrees.getDocCommentTree(memberDoc) == null) {
+            reporter.print(Diagnostic.Kind.WARNING, String.format("Missing comment on property '%s.%s'",
+                    memberDoc.getEnclosingElement().getSimpleName().toString(), memberDoc.getSimpleName().toString()));
+        }
+        else {
+            printWriter.println(cleanComment(docTrees.getDocCommentTree(memberDoc).getFullBody().toString()));
+        }
     }
 
     private static String cleanComment(String comment) {

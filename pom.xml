@@ -155,7 +155,7 @@
                 <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <id>javadoc-test</id>
+                        <id>javadoc-test1</id>
                         <goals>
                             <goal>javadoc-no-fork</goal>
                         </goals>
@@ -163,6 +163,20 @@
                         <configuration>
                             <doclet>de.ohmesoftware.javadoctoproperties.Converter</doclet>
                             <additionalOptions>-prefix rest.description -output mydocs.properties</additionalOptions>
+                            <debug>true</debug>
+                            <docletPath>${project.build.outputDirectory}</docletPath>
+                            <sourcepath>${project.basedir}/src/test/java/de/ohmesoftware/javadoctoproperties/model</sourcepath>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>javadoc-test2</id>
+                        <goals>
+                            <goal>javadoc-no-fork</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <doclet>de.ohmesoftware.javadoctoproperties.Converter</doclet>
+                            <additionalOptions>-prefix rest.description -output mydocs2.properties -includes **model.Foo**:**model.Bar** -e **FooFoo**</additionalOptions>
                             <debug>true</debug>
                             <docletPath>${project.build.outputDirectory}</docletPath>
                             <sourcepath>${project.basedir}/src/test/java/de/ohmesoftware/javadoctoproperties/model</sourcepath>
