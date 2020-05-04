@@ -33,7 +33,7 @@ This is the first version and has the following limitations:
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>javadoc-test</id>
@@ -53,8 +53,8 @@ This is the first version and has the following limitations:
                 <dependencies>
                     <dependency>
                         <groupId>de.ohmesoftware</groupId>
-                        <artifactId>javadoctoproperties</artifactId>
-                        <version>0.0.1-SNAPSHOT</version>
+                        <artifactId>javadoctoproperties-java9</artifactId>
+                        <version>0.0.4-SNAPSHOT</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -65,6 +65,32 @@ This is the first version and has the following limitations:
 See https://central.sonatype.org/pages/apache-maven.html
 
 The login page of Nexus is: https://oss.sonatype.org/
+
+## Preparations
+
+* Set up a PGP key for signing the jar
+* In the Maven `settings.xml` include:
+
+```
+ <servers>
+        <server>
+            <id>ossrh</id>
+            <username>your username</username>
+            <password>your password</password>
+        </server>
+    </servers>
+
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <gpg.javadocproperties.keyname>pgp signign identity (= email address)</gpg.javadocproperties.keyname>
+            </properties>
+        </profile>
+    </profiles>
+```
 
 # For Snapshots
 
