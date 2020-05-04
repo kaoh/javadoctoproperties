@@ -1,7 +1,9 @@
 # Introduction
 
-This library generates a properties file as string as output from Java source files' Javadocs. It is implemented as 
+This library generates a properties file from the Java source files' Javadocs. It is implemented as 
 Doclet and to be used together with `javadoc`.
+
+This version is using the new `jdk.javadoc.doclet` API from JDK 9.
 
 # Features
 
@@ -62,6 +64,7 @@ This is the first version and has the following limitations:
 
 See https://central.sonatype.org/pages/apache-maven.html
 
+The login page of Nexus is: https://oss.sonatype.org/
 
 # For Snapshots
 
@@ -75,7 +78,7 @@ mvn release:perform
 ```
 
 Release the deployment using Nexus See https://central.sonatype.org/pages/releasing-the-deployment.html
-Or alternatively do it with Maven:
+Or do it with Maven:
 
 ```
 cd target/checkout
