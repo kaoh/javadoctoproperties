@@ -268,6 +268,7 @@ public class Converter implements Doclet {
         if (docTrees.getDocCommentTree(memberDoc) == null) {
             reporter.print(Diagnostic.Kind.WARNING, String.format("Missing comment on property '%s.%s'",
                     memberDoc.getEnclosingElement().getSimpleName().toString(), memberDoc.getSimpleName().toString()));
+            printWriter.println();
         }
         else {
             printWriter.println(cleanComment(docTrees.getDocCommentTree(memberDoc).getFullBody().toString()));
@@ -275,7 +276,7 @@ public class Converter implements Doclet {
     }
 
     private static String cleanComment(String comment) {
-        return comment.replaceAll("\\n", SPACE).replaceAll("\\s+", SPACE);
+        return comment.replaceAll("\\n", SPACE).replaceAll("\\s+", SPACE).replaceAll(",<", "<").replaceAll(">,", ">");
     }
 
     @Override
