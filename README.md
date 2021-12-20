@@ -3,7 +3,8 @@
 This library generates a properties file from the Java source files' Javadocs. It is implemented as 
 Doclet and to be used together with `javadoc`.
 
-This version is using the new `jdk.javadoc.doclet` API from JDK 9.
+This version is supporting Java 8 and also the the new `jdk.javadoc.doclet` API from JDK 9 
+depending on the used Java version.
 
 # Features
 
@@ -12,7 +13,8 @@ ALPS or JSON schema documentation used in [Spring Data REST API](https://docs.sp
 [OpenAPI documentation (former Swagger)](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) using 
 property files in the annotations, e.g. in ` ApiModelProperty` support by [SpringFox](https://springfox.github.io/springfox/).
 
-It is using the [Doclet API](https://docs.oracle.com/javase/9/docs/api/jdk/javadoc/doclet/package-summary.html) internally.
+The project is using the [Doclet API](https://docs.oracle.com/javase/6/docs/jdk/api/javadoc/doclet/index.html) 
+and the [Doclet API](https://docs.oracle.com/javase/9/docs/api/jdk/javadoc/doclet/package-summary.html) internally.
 
 Supported:
 * Prefix for property keys
@@ -35,7 +37,7 @@ This is the first version and has the following limitations:
 
 ## Maven
 
-```
+```xml
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -48,7 +50,9 @@ This is the first version and has the following limitations:
                         </goals>
                         <phase>test</phase>
                         <configuration>
-                            <doclet>de.ohmesoftware.javadoctoproperties.Converter</doclet>
+                            <!-- use for Java 8 -->
+                            <!--doclet>de.ohmesoftware.javadoctoproperties.Converter</doclet-->
+                            <doclet>de.ohmesoftware.javadoctoproperties.Converter9</doclet>
                             <additionalOptions>-prefix rest.description -output src/main/resources/mydocs.properties</additionalOptions>
                             <additionalOptions>-i *Foo* -e *model.Bar*</additionalOptions>
                             <debug>true</debug>
@@ -60,12 +64,16 @@ This is the first version and has the following limitations:
                 <dependencies>
                     <dependency>
                         <groupId>de.ohmesoftware</groupId>
-                        <artifactId>javadoctoproperties-java9</artifactId>
-                        <version>0.0.4-SNAPSHOT</version>
+                        <artifactId>javadoctoproperties</artifactId>
+                        <version>0.0.5</version>
                     </dependency>
                 </dependencies>
             </plugin>
 ```
+
+# Build
+
+For the compilation the environment property `JAVA_8_HOME` must bet set point to a Java 8 JDK.
 
 # Deployment + Release
 
