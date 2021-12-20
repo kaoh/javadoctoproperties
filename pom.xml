@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ohmesoftware</groupId>
     <artifactId>javadoctoproperties</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.5</version>
     <name>Javadoc to Properties Converter</name>
 
     <description>This library generates a properties file from Java source files' Javadocs. It is implemented as
@@ -275,7 +274,7 @@
         <connection>scm:git:git://github.com/kaoh/javadoctoproperties.git</connection>
         <developerConnection>scm:git:ssh://github.com/kaoh/javadoctoproperties.git</developerConnection>
         <url>https://github.com/kaoh/javadoctoproperties/tree/master</url>
-        <tag>HEAD</tag>
+        <tag>javadoctoproperties-0.0.5</tag>
     </scm>
 
 </project>
