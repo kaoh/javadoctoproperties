@@ -74,6 +74,7 @@ This is the first version and has the following limitations:
 # Build
 
 For the compilation the environment property `JAVA_8_HOME` must bet set point to a Java 8 JDK.
+Java9+ is needed for the compilation.
 
 # Deployment + Release
 
