@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ohmesoftware</groupId>
     <artifactId>javadoctoproperties-java9</artifactId>
@@ -7,7 +8,8 @@
     <name>Javadoc to Properties Converter</name>
 
     <description>This library generates a properties file from Java source files' Javadocs. It is implemented as
-        Doclet and to be used together with `javadoc`.</description>
+        Doclet and to be used together with `javadoc`.
+    </description>
     <url>https://github.com/kaoh/javadoctoproperties</url>
 
     <licenses>
@@ -43,7 +45,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -108,17 +110,53 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                </configuration>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>compile-java-8</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>1.8</source>
+                            <target>1.8</target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-java-9</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>9</release>
+                            <source>9</source>
+                            <target>9</target>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                            </compileSourceRoots>
+                            <multiReleaseOutput>true</multiReleaseOutput>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -165,7 +203,8 @@
                             <additionalOptions>-prefix rest.description -output mydocs.properties</additionalOptions>
                             <debug>true</debug>
                             <docletPath>${project.build.outputDirectory}</docletPath>
-                            <sourcepath>${project.basedir}/src/test/java/de/ohmesoftware/javadoctoproperties/model</sourcepath>
+                            <sourcepath>${project.basedir}/src/test/java/de/ohmesoftware/javadoctoproperties/model
+                            </sourcepath>
                         </configuration>
                     </execution>
                     <execution>
@@ -176,10 +215,13 @@
                         <phase>test</phase>
                         <configuration>
                             <doclet>de.ohmesoftware.javadoctoproperties.Converter</doclet>
-                            <additionalOptions>-prefix rest.description -output mydocs2.properties -includes **model.Foo**:**model.Bar** -e **FooFoo**</additionalOptions>
+                            <additionalOptions>-prefix rest.description -output mydocs2.properties -includes
+                                **model.Foo**:**model.Bar** -e **FooFoo**
+                            </additionalOptions>
                             <debug>true</debug>
                             <docletPath>${project.build.outputDirectory}</docletPath>
-                            <sourcepath>${project.basedir}/src/test/java/de/ohmesoftware/javadoctoproperties/model</sourcepath>
+                            <sourcepath>${project.basedir}/src/test/java/de/ohmesoftware/javadoctoproperties/model
+                            </sourcepath>
                         </configuration>
                     </execution>
                 </executions>
@@ -196,8 +238,8 @@
         <connection>scm:git:git://github.com/kaoh/javadoctoproperties.git</connection>
         <developerConnection>scm:git:ssh://github.com/kaoh/javadoctoproperties.git</developerConnection>
         <url>https://github.com/kaoh/javadoctoproperties/tree/masterjava9+</url>
-    <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
 
