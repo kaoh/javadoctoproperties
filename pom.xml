@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ohmesoftware</groupId>
     <artifactId>javadoctoproperties</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6-SNAPSHOT</version>
     <name>Javadoc to Properties Converter</name>
 
     <description>This library generates a properties file from Java source files' Javadocs. It is implemented as
@@ -274,7 +274,7 @@
         <connection>scm:git:git://github.com/kaoh/javadoctoproperties.git</connection>
         <developerConnection>scm:git:ssh://github.com/kaoh/javadoctoproperties.git</developerConnection>
         <url>https://github.com/kaoh/javadoctoproperties/tree/master</url>
-        <tag>javadoctoproperties-0.0.5</tag>
+        <tag>HEAD</tag>
     </scm>
 
 </project>
